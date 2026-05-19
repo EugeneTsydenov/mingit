@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/trivia/projects/minigit/build",
+  "command": "/usr/bin/cc  -I/home/trivia/projects/minigit/include  -o CMakeFiles/main.dir/src/main.c.o -c /home/trivia/projects/minigit/src/main.c",
+  "file": "/home/trivia/projects/minigit/src/main.c"
+},
+{
+  "directory": "/home/trivia/projects/minigit/build",
+  "command": "/usr/bin/cc  -I/home/trivia/projects/minigit/include  -o CMakeFiles/main.dir/src/cli/parser.c.o -c /home/trivia/projects/minigit/src/cli/parser.c",
+  "file": "/home/trivia/projects/minigit/src/cli/parser.c"
+}
+]
