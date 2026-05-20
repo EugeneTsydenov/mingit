@@ -1,4 +1,6 @@
+#include "cli/dispatcher.h"
 #include "cli/parser.h"
+
 #include <stdio.h>
 
 void print_help() {
@@ -43,15 +45,8 @@ void print_help() {
            "    diff <commit>\n"
            "        Compare current HEAD with specified commit.\n"
            "\n"
-           "    checkout <commit>\n"
-           "        Restore repository state from commit.\n"
-           "        Activates detached HEAD mode if commit hash is used.\n"
-           "\n"
            "    checkout <commit> <file>\n"
-           "        Restore single file from commit.\n"
-           "\n"
-           "    checkout <branch>\n"
-           "        Switch to branch.\n"
+           "        Restore file from specified commit.\n"
            "\n"
            "    branch\n"
            "        List all branches.\n"
@@ -66,5 +61,7 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    return parse_args(argc, argv);
+    ParsedCommand cmd = parse_args(argc, argv);
+
+    return dispatch_command(&cmd);
 }

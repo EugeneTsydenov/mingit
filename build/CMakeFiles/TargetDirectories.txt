@@ -1,3 +1,0 @@
-/home/trivia/projects/minigit/build/CMakeFiles/main.dir
-/home/trivia/projects/minigit/build/CMakeFiles/edit_cache.dir
-/home/trivia/projects/minigit/build/CMakeFiles/rebuild_cache.dir
