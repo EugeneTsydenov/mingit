@@ -19,7 +19,7 @@ typedef struct {
 } AddArgs;
 
 typedef struct {
-    const char *file;
+    char *file;
 } RemoveArgs;
 
 typedef struct {

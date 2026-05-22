@@ -3,6 +3,7 @@
 #include "commands/add.h"
 #include "commands/init.h"
 #include "result/result.h"
+#include <stdio.h>
 
 Result dispatch_command(ParsedCommand *cmd) {
     switch (cmd->type) {
@@ -11,7 +12,7 @@ Result dispatch_command(ParsedCommand *cmd) {
     case CMD_ADD:
         return add(cmd->args.add.file);
     case CMD_REMOVE:
-        break;
+        return remove(cmd->args.remove.file);
     case CMD_COMMIT:
         break;
     case CMD_LOG:
