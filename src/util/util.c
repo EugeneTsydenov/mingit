@@ -1,5 +1,7 @@
+#include "util/util.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 uint64_t hash_commit(const char *parent, time_t timestamp, const char *message,
@@ -29,4 +31,12 @@ uint64_t hash_commit(const char *parent, time_t timestamp, const char *message,
 
 void hash_to_string(uint64_t hash, char out[17]) {
     snprintf(out, 17, "%llx", (unsigned long long)hash);
+}
+
+char *normalize_path(char *path) {
+    while (strncmp(path, "./", 2) == 0) {
+        path += 2;
+    }
+
+    return path;
 }

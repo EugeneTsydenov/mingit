@@ -134,3 +134,21 @@ int repo_write_head(const char *hash) {
 
     return 1;
 }
+
+int repo_write_index(char operation, const char *file_name) {
+    char path[512];
+
+    repo_build_pathf(path, sizeof(path), "index");
+
+    FILE *file = fopen(path, "a");
+
+    if (!file) {
+        return 0;
+    }
+
+    fprintf(file, "%s %s\n", operation == 'a' ? "ADD" : "REMOVE", file_name);
+
+    fclose(file);
+
+    return 1;
+}

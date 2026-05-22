@@ -15,7 +15,7 @@ typedef enum {
 } CommandType;
 
 typedef struct {
-    const char *file;
+    char *file;
 } AddArgs;
 
 typedef struct {

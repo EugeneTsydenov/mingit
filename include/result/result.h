@@ -20,43 +20,54 @@ typedef enum {
     UNKNOWN_COMMAND,
 
     // repo status
-    REPO_ALREADY_EXISTS
+    REPO_ALREADY_EXISTS,
+    REPO_NOT_FOUND,
+
+    // file status
+    FILE_NOT_FOUND,
+    RESERVED_MINIGIT_PATH,
 } Result;
 
 static inline const char *result_message(Result result) {
     switch (result) {
     case OK:
-        return "ok\n";
+        return "ok";
     case NO_COMMAND_PROVIDED:
-        return "no command provided\n";
+        return "no command provided";
     case INIT_TOO_MANY_ARGUMENTS:
-        return "init: too many arguments\n";
+        return "init: too many arguments";
     case ADD_EXPECTED_PATH:
-        return "add: expected path\n";
+        return "add: expected path";
     case REMOVE_EXPECTED_PATH:
-        return "remove: expected path\n";
+        return "remove: expected path";
     case COMMIT_EXPECTED_MESSAGE:
-        return "commit: expected message\n";
+        return "commit: expected message";
     case LOG_MISSING_VALUE_N:
-        return "log: missing value for -n\n";
+        return "log: missing value for -n";
     case LOG_INVALID_NUMBER:
-        return "log: invalid number\n";
+        return "log: invalid number";
     case LOG_UNKNOWN_OPTION:
-        return "log: unknown option\n";
+        return "log: unknown option";
     case LOG_MULTIPLE_COMMITS_SPECIFIED:
-        return "log: multiple commits specified\n";
+        return "log: multiple commits specified";
     case DIFF_EXPECTED_COMMIT:
-        return "diff: expected commit\n";
+        return "diff: expected commit";
     case STATUS_TOO_MANY_ARGUMENTS:
-        return "status: too many arguments\n";
+        return "status: too many arguments";
     case CHECKOUT_EXPECTED_COMMIT_AND_FILE:
-        return "checkout: expected commit and file\n";
+        return "checkout: expected commit and file";
     case UNKNOWN_COMMAND:
-        return "unknown command\n";
+        return "unknown command";
     case REPO_ALREADY_EXISTS:
-        return "repository already exists.\n";
+        return "repository already exists";
+    case REPO_NOT_FOUND:
+        return "repository not found";
+    case FILE_NOT_FOUND:
+        return "file not found";
+    case RESERVED_MINIGIT_PATH:
+        return "cannot operate on reserved path .minigit";
     default:
-        return "unknown error\n";
+        return "unknown error";
     }
 }
 

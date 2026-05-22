@@ -1,4 +1,6 @@
+#include "cli/dispatcher.h"
 #include "cli/parser.h"
+#include "commands/add.h"
 #include "commands/init.h"
 #include "result/result.h"
 
@@ -7,7 +9,7 @@ Result dispatch_command(ParsedCommand *cmd) {
     case CMD_INIT:
         return init();
     case CMD_ADD:
-        break;
+        return add(cmd->args.add.file);
     case CMD_REMOVE:
         break;
     case CMD_COMMIT:

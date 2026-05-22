@@ -17,6 +17,8 @@ int repo_write_meta(const char *commit_hash, const char *parent,
 
 int repo_write_head(const char *hash);
 
+int repo_write_index(char operation, const char *file_name);
+
 int mkdir_p(const char *path);
 
 #endif
