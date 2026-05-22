@@ -1,18 +1,11 @@
 #include "cli/parser.h"
-#include <stdio.h>
+#include "commands/init.h"
+#include "result/result.h"
 
-int dispatch_command(ParsedCommand *cmd) {
-    if (cmd->type == CMD_INVALID || cmd->type == CMD_UNKNOWN) {
-        if (cmd->error != NULL) {
-            fprintf(stderr, "%s\n", cmd->error);
-        }
-
-        return 1;
-    }
-
+Result dispatch_command(ParsedCommand *cmd) {
     switch (cmd->type) {
     case CMD_INIT:
-        break;
+        return init();
     case CMD_ADD:
         break;
     case CMD_REMOVE:
@@ -27,13 +20,7 @@ int dispatch_command(ParsedCommand *cmd) {
         break;
     case CMD_CHECKOUT:
         break;
-    case CMD_UNKNOWN:
-    case CMD_INVALID:
-        break;
-    default:
-        fprintf(stderr, "unreachable command type\n");
-        return 1;
     }
 
-    return 0;
+    return OK;
 }

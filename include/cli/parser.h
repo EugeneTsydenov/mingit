@@ -1,6 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include "result/result.h"
+
 typedef enum {
     CMD_INIT,
     CMD_ADD,
@@ -9,9 +11,7 @@ typedef enum {
     CMD_LOG,
     CMD_DIFF,
     CMD_STATUS,
-    CMD_CHECKOUT,
-    CMD_UNKNOWN,
-    CMD_INVALID
+    CMD_CHECKOUT
 } CommandType;
 
 typedef struct {
@@ -28,7 +28,7 @@ typedef struct {
 
 typedef struct {
     const char *commit;
-    const int num;
+    int num;
 } LogArgs;
 
 typedef struct {
@@ -54,10 +54,8 @@ typedef struct {
         DiffArgs diff;
         CheckoutArgs checkout;
     } args;
-
-    const char* error;
 } ParsedCommand;
 
-ParsedCommand parse_args(int argc, char **argv);
+Result parse_args(int argc, char **argv, ParsedCommand *cmd);
 
 #endif

@@ -2,7 +2,8 @@
 #define DISPATCHER_H
 
 #include "cli/parser.h"
+#include "result/result.h"
 
-int dispatch_command(ParsedCommand *cmd);
+Result dispatch_command(ParsedCommand *cmd);
 
 #endif

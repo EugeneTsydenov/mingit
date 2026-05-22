@@ -1,5 +1,6 @@
 #include "cli/dispatcher.h"
 #include "cli/parser.h"
+#include "result/result.h"
 
 #include <stdio.h>
 
@@ -61,7 +62,20 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    ParsedCommand cmd = parse_args(argc, argv);
+    ParsedCommand cmd;
+    Result result;
 
-    return dispatch_command(&cmd);
+    result = parse_args(argc, argv, &cmd);
+    if (result != OK) {
+        fprintf(stderr, "%s\n", result_message(result));
+        return 1;
+    }
+
+    result = dispatch_command(&cmd);
+    if (result != OK) {
+        fprintf(stderr, "%s\n", result_message(result));
+        return 1;
+    }
+
+    return 0;
 }
