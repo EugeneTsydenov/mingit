@@ -1,12 +1,22 @@
 #ifndef REPO_H
 #define REPO_H
 
+#include <time.h>
 #define MINIGIT_DIR ".minigit"
 
-void create_path(const char *path);
+int repo_create_directory(const char *path);
+
+void repo_create_file(const char *fileName);
+
+void repo_create_commit(const char *hash);
 
 int repo_exists_local(void);
 
-int make_dir(const char *path);
+int repo_write_meta(const char *commit_hash, const char *parent,
+                    const char *message, time_t timestamp);
+
+int repo_write_head(const char *hash);
+
+int mkdir_p(const char *path);
 
 #endif

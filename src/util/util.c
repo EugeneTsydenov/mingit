@@ -26,3 +26,7 @@ uint64_t hash_commit(const char *parent, time_t timestamp, const char *message,
 
     return hash;
 }
+
+void hash_to_string(uint64_t hash, char out[17]) {
+    snprintf(out, 17, "%llx", (unsigned long long)hash);
+}
