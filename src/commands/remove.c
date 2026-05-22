@@ -1,8 +1,8 @@
 #include "commands/remove.h"
-#include "fs/fs.h"
 #include "repo/repo.h"
 #include "result/result.h"
 #include "util/util.h"
+
 #include <string.h>
 
 Result remove(char *file_name) {
@@ -11,10 +11,6 @@ Result remove(char *file_name) {
     }
 
     char *normalized = normalize_path(file_name);
-
-    if (!check_file(normalized)) {
-        return FILE_NOT_FOUND;
-    }
 
     if (strncmp(normalized, MINIGIT_DIR, 6) == 0) {
         return RESERVED_MINIGIT_PATH;
