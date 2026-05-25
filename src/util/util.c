@@ -26,6 +26,8 @@ uint64_t hash_commit(const char *parent, time_t timestamp, const char *message,
         }
     }
 
+    hash |= 0x8000000000000000ULL;
+
     return hash;
 }
 
@@ -39,4 +41,33 @@ char *normalize_path(char *path) {
     }
 
     return path;
+}
+
+int copy_file(const char *src_path, const char *dest_path) {
+    FILE *src = fopen(src_path, "rb");
+    if (!src) {
+        return 0;
+    }
+
+    FILE *dest = fopen(dest_path, "wb");
+    if (!dest) {
+        fclose(src);
+        return 0;
+    }
+
+    char buffer[4096];
+    size_t bytes_read;
+
+    while ((bytes_read = fread(buffer, 1, sizeof(buffer), src)) > 0) {
+        if (fwrite(buffer, 1, bytes_read, dest) != bytes_read) {
+            fclose(src);
+            fclose(dest);
+            return 0;
+        }
+    }
+
+    fclose(src);
+    fclose(dest);
+
+    return 1;
 }

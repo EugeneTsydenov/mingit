@@ -11,4 +11,6 @@ void hash_to_string(uint64_t hash, char out[17]);
 
 char *normalize_path(char *path);
 
+int copy_file(const char *src_path, const char *dest_path);
+
 #endif

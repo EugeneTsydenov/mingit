@@ -26,6 +26,8 @@ typedef enum {
     // file status
     FILE_NOT_FOUND,
     RESERVED_MINIGIT_PATH,
+
+    NOTHING_TO_COMMIT
 } Result;
 
 static inline const char *result_message(Result result) {
@@ -66,6 +68,8 @@ static inline const char *result_message(Result result) {
         return "file not found";
     case RESERVED_MINIGIT_PATH:
         return "cannot operate on reserved path .minigit";
+    case NOTHING_TO_COMMIT:
+        return "nothing to commit";
     default:
         return "unknown error";
     }

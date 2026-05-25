@@ -1,7 +1,11 @@
 #include "repo/repo.h"
+#include "fs/fs.h"
+#include "util/util.h"
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 
@@ -10,15 +14,6 @@
 #define stat _stat
 #else
 #include <unistd.h>
-#endif
-
-#if defined(_WIN32) || defined(_WIN64)
-#include <direct.h>
-#define make_directory(dir) _mkdir(dir)
-#else
-#include <sys/stat.h>
-#include <sys/types.h>
-#define make_directory(dir) mkdir(dir, 0755)
 #endif
 
 void repo_build_pathf(char *out, size_t size, const char *format, ...) {
@@ -33,22 +28,6 @@ void repo_build_pathf(char *out, size_t size, const char *format, ...) {
     va_end(args);
 
     snprintf(out, size, "%s/%s", MINIGIT_DIR, relative);
-}
-
-int mkdir_p(const char *path) {
-    char temp[512];
-
-    snprintf(temp, sizeof(temp), "%s", path);
-
-    for (char *p = temp + 1; *p; p++) {
-        if (*p == '/') {
-            *p = '\0';
-            make_directory(temp);
-            *p = '/';
-        }
-    }
-
-    return make_directory(temp);
 }
 
 int repo_create_directory(const char *path) {
@@ -146,9 +125,142 @@ int repo_write_index(char operation, const char *file_name) {
         return 0;
     }
 
-    fprintf(file, "%s %s\n", operation == 'a' ? "ADD" : "REMOVE", file_name);
+    fprintf(file, "%c %s\n", operation, file_name);
 
     fclose(file);
+
+    return 1;
+}
+
+int repo_index_exists() {
+    struct stat buffer;
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "index");
+    return (stat(path, &buffer) == 0) && S_ISREG(buffer.st_mode);
+}
+
+int repo_head_exists() {
+    struct stat buffer;
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "HEAD");
+    return (stat(path, &buffer) == 0) && S_ISREG(buffer.st_mode);
+}
+
+void repo_read_head(char *hash_buf) {
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "HEAD");
+
+    FILE *file = fopen(path, "r");
+    if (!file) {
+        return;
+    }
+
+    if (fscanf(file, "%16s", hash_buf) != 1) {
+        fclose(file);
+        return;
+    }
+
+    fclose(file);
+}
+
+TrackedFile *repo_read_tracked_files(const char *commit_hash, int *out_count,
+                                     int *out_capacity) {
+    *out_count = 0;
+
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "commits/%s/tracked_files",
+                     commit_hash);
+
+    FILE *file = fopen(path, "r");
+    if (!file) {
+        return NULL;
+    }
+
+    *out_capacity = 10;
+    TrackedFile *files = malloc(*out_capacity * sizeof(TrackedFile));
+
+    int count = 0;
+    while (fscanf(file, "%511s %16s", files[count].path, files[count].hash) ==
+           2) {
+        count++;
+
+        if (count >= *out_capacity) {
+            *out_capacity *= 2;
+            TrackedFile *new_files =
+                realloc(files, *out_capacity * sizeof(TrackedFile));
+            files = new_files;
+        }
+    }
+
+    fclose(file);
+    *out_count = count;
+    return files;
+}
+
+IndexRow *repo_read_index(int *out_count) {
+    *out_count = 0;
+
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "index");
+
+    FILE *file = fopen(path, "r");
+    if (!file) {
+        return NULL;
+    }
+
+    int capacity = 7;
+    IndexRow *rows = malloc(capacity * sizeof(IndexRow));
+
+    int count = 0;
+    while (fscanf(file, "%c %s", &rows[count].mod, rows[count].path)) {
+        count++;
+
+        if (count >= capacity) {
+            capacity *= 2;
+            IndexRow *new_rows = realloc(rows, capacity * sizeof(IndexRow));
+            rows = new_rows;
+        }
+    }
+
+    fclose(file);
+    *out_count = count;
+
+    return rows;
+}
+
+int repo_write_copy_files(const char *commit_hash, char *file_path) {
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "commits/%s/files/%s", commit_hash,
+                     file_path);
+
+    char dir_path[512];
+    strcpy(dir_path, path);
+    char *last_slash = strrchr(dir_path, '/');
+    if (last_slash) {
+        *last_slash = '\0';
+        mkdir_p(dir_path);
+    }
+
+    if (!copy_file(file_path, path)) {
+        return 0;
+    }
+    return 1;
+}
+
+int repo_write_tracked_files(const char *commit_hash, TrackedFile *files,
+                             int count) {
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "commits/%s/tracked_files",
+                     commit_hash);
+
+    FILE *file = fopen(path, "w");
+    if (!file) {
+        return 0;
+    }
+
+    for (int i = 0; i < count; i++) {
+        fprintf(file, "%s %s\n", files[i].path, files[i].hash);
+    }
 
     return 1;
 }

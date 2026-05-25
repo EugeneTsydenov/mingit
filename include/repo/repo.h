@@ -4,6 +4,16 @@
 #include <time.h>
 #define MINIGIT_DIR ".minigit"
 
+typedef struct {
+    char path[512];
+    char hash[17];
+} TrackedFile;
+
+typedef struct {
+    char mod;
+    char path[512];
+} IndexRow;
+
 int repo_create_directory(const char *path);
 
 void repo_create_file(const char *fileName);
@@ -20,5 +30,20 @@ int repo_write_head(const char *hash);
 int repo_write_index(char operation, const char *file_name);
 
 int mkdir_p(const char *path);
+
+int repo_index_exists();
+
+int repo_head_exists();
+
+void repo_read_head(char *hash_buf);
+
+TrackedFile *repo_read_tracked_files(const char *commit_hash, int *out_count, int *out_capaciry);
+
+IndexRow *repo_read_index(int *out_count);
+
+int repo_write_copy_files(const char *commit_hash, char *file_path);
+
+int repo_write_tracked_files(const char *commit_hash, TrackedFile *files,
+                             int count);
 
 #endif

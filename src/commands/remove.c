@@ -12,11 +12,11 @@ Result remove(char *file_name) {
 
     char *normalized = normalize_path(file_name);
 
-    if (strncmp(normalized, MINIGIT_DIR, 6) == 0) {
+    if (strncmp(normalized, MINIGIT_DIR, 8) == 0) {
         return RESERVED_MINIGIT_PATH;
     }
 
-    repo_write_index('r', normalize_path(normalized));
+    repo_write_index('r', normalized);
 
     return OK;
 }

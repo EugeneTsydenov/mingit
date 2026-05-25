@@ -16,11 +16,11 @@ Result add(char *file_name) {
         return FILE_NOT_FOUND;
     }
 
-    if (strncmp(normalized, MINIGIT_DIR, 6) == 0) {
+    if (strncmp(normalized, MINIGIT_DIR, 8) == 0) {
         return RESERVED_MINIGIT_PATH;
     }
 
-    repo_write_index('a', normalize_path(normalized));
+    repo_write_index('a', normalized);
 
     return OK;
 }
