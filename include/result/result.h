@@ -27,7 +27,8 @@ typedef enum {
     FILE_NOT_FOUND,
     RESERVED_MINIGIT_PATH,
 
-    NOTHING_TO_COMMIT
+    NOTHING_TO_COMMIT,
+    COMMIT_NOT_FOUND,
 } Result;
 
 static inline const char *result_message(Result result) {
@@ -70,6 +71,8 @@ static inline const char *result_message(Result result) {
         return "cannot operate on reserved path .minigit";
     case NOTHING_TO_COMMIT:
         return "nothing to commit";
+    case COMMIT_NOT_FOUND:
+        return "commit not found";
     default:
         return "unknown error";
     }

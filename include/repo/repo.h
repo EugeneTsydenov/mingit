@@ -14,6 +14,13 @@ typedef struct {
     char path[512];
 } IndexRow;
 
+typedef struct {
+    char hash[17];
+    char msg[512];
+    time_t timestamp;
+    char parent[17];
+} CommitMeta;
+
 int repo_create_directory(const char *path);
 
 void repo_create_file(const char *fileName);
@@ -45,5 +52,7 @@ int repo_write_copy_files(const char *commit_hash, char *file_path);
 
 int repo_write_tracked_files(const char *commit_hash, TrackedFile *files,
                              int count);
+
+int repo_read_meta(const char *commit_hash, CommitMeta *meta);
 
 #endif

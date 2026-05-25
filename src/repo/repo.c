@@ -269,3 +269,49 @@ int repo_write_tracked_files(const char *commit_hash, TrackedFile *files,
 
     return 1;
 }
+
+#include <string.h>
+
+int repo_read_meta(const char *commit_hash, CommitMeta *meta) {
+    char path[512];
+    repo_build_pathf(path, sizeof(path), "commits/%s/meta", commit_hash);
+
+    FILE *file = fopen(path, "r");
+    if (!file) {
+        return 0;
+    }
+
+    meta->parent[0] = '\0';
+    meta->msg[0] = '\0';
+    meta->hash[0] = '\0';
+    meta->timestamp = 0;
+
+    char line[512];
+
+    while (fgets(line, sizeof(line), file)) {
+        line[strcspn(line, "\n")] = '\0';
+
+        if (strncmp(line, "parent=", 7) == 0) {
+            strncpy(meta->parent, line + 7, sizeof(meta->parent) - 1);
+            meta->parent[sizeof(meta->parent) - 1] = '\0';
+            continue;
+        }
+        if (strncmp(line, "message=", 8) == 0) {
+            strncpy(meta->msg, line + 8, sizeof(meta->msg) - 1);
+            meta->msg[sizeof(meta->msg) - 1] = '\0';
+            continue;
+        }
+        if (strncmp(line, "time=", 5) == 0) {
+            meta->timestamp = (time_t)atoll(line + 5);
+            continue;
+        }
+        if (strncmp(line, "hash=", 5) == 0) {
+            strncpy(meta->hash, line + 5, sizeof(meta->hash) - 1);
+            meta->hash[sizeof(meta->hash) - 1] = '\0';
+            continue;
+        }
+    }
+
+    fclose(file);
+    return 1;
+}

@@ -3,6 +3,7 @@
 #include "commands/add.h"
 #include "commands/commit.h"
 #include "commands/init.h"
+#include "commands/log.h"
 #include "result/result.h"
 #include <stdio.h>
 
@@ -17,7 +18,7 @@ Result dispatch_command(ParsedCommand *cmd) {
     case CMD_COMMIT:
         return commit(cmd->args.commit.msg);
     case CMD_LOG:
-        break;
+        return mlog(cmd->args.log.commit, cmd->args.log.num);
     case CMD_DIFF:
         break;
     case CMD_STATUS:
