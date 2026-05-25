@@ -3,6 +3,6 @@
 
 #include "result/result.h"
 
-Result commit(char *msg);
+Result commit(const char *msg);
 
 #endif

@@ -1,6 +1,7 @@
 #include "cli/dispatcher.h"
 #include "cli/parser.h"
 #include "commands/add.h"
+#include "commands/commit.h"
 #include "commands/init.h"
 #include "result/result.h"
 #include <stdio.h>
@@ -14,7 +15,7 @@ Result dispatch_command(ParsedCommand *cmd) {
     case CMD_REMOVE:
         return remove(cmd->args.remove.file);
     case CMD_COMMIT:
-        break;
+        return commit(cmd->args.commit.msg);
     case CMD_LOG:
         break;
     case CMD_DIFF:

@@ -3,6 +3,7 @@
 #include "result/result.h"
 #include "util/util.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <stdlib.h>
@@ -59,7 +60,7 @@ char *tracked_files_to_string(TrackedFile *files, int count) {
     return result;
 }
 
-Result commit(char *msg) {
+Result commit(const char *msg) {
     if (!repo_exists_local() || !repo_head_exists()) {
         return REPO_NOT_FOUND;
     }

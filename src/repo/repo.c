@@ -136,7 +136,12 @@ int repo_index_exists() {
     struct stat buffer;
     char path[512];
     repo_build_pathf(path, sizeof(path), "index");
-    return (stat(path, &buffer) == 0) && S_ISREG(buffer.st_mode);
+
+    if (stat(path, &buffer) == 0 && S_ISREG(buffer.st_mode)) {
+        return buffer.st_size > 0;
+    }
+
+    return 0;
 }
 
 int repo_head_exists() {
@@ -212,7 +217,7 @@ IndexRow *repo_read_index(int *out_count) {
     IndexRow *rows = malloc(capacity * sizeof(IndexRow));
 
     int count = 0;
-    while (fscanf(file, "%c %s", &rows[count].mod, rows[count].path)) {
+    while (fscanf(file, " %c %511s", &rows[count].mod, rows[count].path) == 2) {
         count++;
 
         if (count >= capacity) {
