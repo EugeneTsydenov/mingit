@@ -32,7 +32,7 @@ typedef struct {
 } LogArgs;
 
 typedef struct {
-    const char *file;
+    const char *target_commit;
 } DiffArgs;
 
 typedef struct {

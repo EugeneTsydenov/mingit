@@ -270,8 +270,6 @@ int repo_write_tracked_files(const char *commit_hash, TrackedFile *files,
     return 1;
 }
 
-#include <string.h>
-
 int repo_read_meta(const char *commit_hash, CommitMeta *meta) {
     char path[512];
     repo_build_pathf(path, sizeof(path), "commits/%s/meta", commit_hash);

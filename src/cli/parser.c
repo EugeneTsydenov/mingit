@@ -61,7 +61,8 @@ static Result parse_log_args(int argc, char **argv, const char **commit,
     return OK;
 }
 
-static Result parse_checkout_args(int argc, char **argv, CheckoutArgs *checkout) {
+static Result parse_checkout_args(int argc, char **argv,
+                                  CheckoutArgs *checkout) {
     /*
      * checkout <commit> <file>
      */
@@ -154,7 +155,7 @@ Result parse_args(int argc, char **argv, ParsedCommand *cmd) {
         }
 
         cmd->type = CMD_DIFF;
-        cmd->args.diff.file = argv[2];
+        cmd->args.diff.target_commit = argv[2];
 
         return OK;
     }

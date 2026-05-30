@@ -1,10 +1,15 @@
 #include "cli/dispatcher.h"
+
 #include "cli/parser.h"
 #include "commands/add.h"
 #include "commands/commit.h"
+#include "commands/checkout.h"
+#include "commands/diff.h"
 #include "commands/init.h"
 #include "commands/log.h"
+#include "commands/status.h"
 #include "result/result.h"
+
 #include <stdio.h>
 
 Result dispatch_command(ParsedCommand *cmd) {
@@ -20,11 +25,11 @@ Result dispatch_command(ParsedCommand *cmd) {
     case CMD_LOG:
         return mlog(cmd->args.log.commit, cmd->args.log.num);
     case CMD_DIFF:
-        break;
+        return diff(cmd->args.diff.target_commit);
     case CMD_STATUS:
-        break;
+        return status();
     case CMD_CHECKOUT:
-        break;
+        return checkout(cmd->args.checkout.commit, cmd->args.checkout.file);
     }
 
     return OK;
