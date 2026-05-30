@@ -11,7 +11,7 @@ Result diff(const char *target_commit) {
     }
 
     if (target_commit == NULL) {
-        return OK; 
+        return OK;
     }
 
     CommitMeta target_meta;
@@ -23,14 +23,18 @@ Result diff(const char *target_commit) {
     repo_read_head(head_hash);
 
     int curr_count = 0, curr_capacity = 0;
-    TrackedFile *curr_files = repo_read_tracked_files(head_hash, &curr_count, &curr_capacity);
+    TrackedFile *curr_files =
+        repo_read_tracked_files(head_hash, &curr_count, &curr_capacity);
 
     int target_count = 0, target_capacity = 0;
-    TrackedFile *target_files = repo_read_tracked_files(target_commit, &target_count, &target_capacity);
+    TrackedFile *target_files =
+        repo_read_tracked_files(target_commit, &target_count, &target_capacity);
 
-    printf("Diff between HEAD (%s) and commit %s:\n\n", head_hash, target_commit);
+    printf("Diff between HEAD (%s) and commit %s:\n\n", head_hash,
+           target_commit);
 
-    // Ищем измененные и добавленные (есть в HEAD, но отличаются или отсутствуют в Target)
+    // Ищем измененные и добавленные (есть в HEAD, но отличаются или отсутствуют
+    // в Target)
     for (int i = 0; i < curr_count; i++) {
         int found = 0;
         for (int j = 0; j < target_count; j++) {

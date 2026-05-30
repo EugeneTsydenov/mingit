@@ -30,6 +30,7 @@ int update_tracked_file(TrackedFile **files_ptr, int *count, int *capacity,
         files = new_files;
     }
 
+    // copy n symbols, overflow buffer
     strncpy(files[*count].path, path, sizeof(files[*count].path) - 1);
     strcpy(files[*count].hash, "NEW_HASH");
     (*count)++;
