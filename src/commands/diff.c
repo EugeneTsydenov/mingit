@@ -10,10 +10,6 @@ Result diff(const char *target_commit) {
         return REPO_NOT_FOUND;
     }
 
-    if (target_commit == NULL) {
-        return OK;
-    }
-
     CommitMeta target_meta;
     if (!repo_read_meta(target_commit, &target_meta)) {
         return COMMIT_NOT_FOUND;
