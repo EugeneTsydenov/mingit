@@ -6,22 +6,45 @@
 #include <stdlib.h>
 #include <string.h>
 
-int is_already_added(const char *path) {
+static char get_last_index_mod(const char *path) {
     int count = 0;
     IndexRow *rows = repo_read_index(&count);
 
-    int found = 0;
+    char last_mod = 0;
     for (int i = count - 1; i >= 0; i--) {
         if (strcmp(rows[i].path, path) == 0) {
-            if (rows[i].mod == 'a') {
-                found = 1;
-            }
+            last_mod = rows[i].mod;
             break;
         }
     }
 
+    
     free(rows);
-    return found;
+    
+    return last_mod;
+}
+
+static int is_tracked(const char *path) {
+    if (!repo_head_exists()) {
+        return 0;
+    }
+
+    char head_hash[17];
+    repo_read_head(head_hash);
+
+    int count = 0, capacity = 0;
+    TrackedFile *files = repo_read_tracked_files(head_hash, &count, &capacity);
+    
+    int tracked = 0;
+    for (int i = 0; i < count; i++) {
+        if (strcmp(files[i].path, path) == 0) {
+            tracked = 1;
+            break;
+        }
+    }
+    
+    free(files);
+    return tracked;
 }
 
 Result add(char *file_name) {
@@ -39,11 +62,13 @@ Result add(char *file_name) {
         return RESERVED_MINIGIT_PATH;
     }
 
-    if (is_already_added(normalized)) {
+    char op = is_tracked(normalized) ? 'm' : 'a';
+
+    if (get_last_index_mod(normalized) == op) {
         return OK;
     }
 
-    repo_write_index('a', normalized);
+    repo_write_index(op, normalized);
 
     return OK;
 }

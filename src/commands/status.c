@@ -18,42 +18,32 @@ Result status(void) {
     int index_count = 0;
     IndexRow *index_rows = repo_read_index(&index_count);
 
-    char head_hash[17] = {0};
-    repo_read_head(head_hash);
-
-    int parent_file_count = 0;
-    int parent_file_capacity = 0;
-    TrackedFile *parent_files = repo_read_tracked_files(head_hash, &parent_file_count, &parent_file_capacity);
-
-
-
     printf("Changes to be committed:\n\n");
 
     for (int i = 0; i < index_count; i++) {
+        // Защита от дубликатов в логе: показываем только последнюю (самую свежую) операцию для файла
+        int is_latest = 1;
+        for (int j = i + 1; j < index_count; j++) {
+            if (strcmp(index_rows[i].path, index_rows[j].path) == 0) {
+                is_latest = 0;
+                break;
+            }
+        }
+        if (!is_latest) continue;
+
         if (index_rows[i].mod == 'r') {
             printf("\033[31mDeleted:\033[0m  %s\n", index_rows[i].path);
+        } else if (index_rows[i].mod == 'm') {
+            printf("\033[33mModified:\033[0m %s\n", index_rows[i].path);
         } else if (index_rows[i].mod == 'a') {
-            int found_in_parent = 0;
-            if (parent_files) {
-                for (int j = 0; j < parent_file_count; j++) {
-                    if (strcmp(parent_files[j].path, index_rows[i].path) == 0) {
-                        found_in_parent = 1;
-                        break;
-                    }
-                }
-            }
-
-            if (found_in_parent) {
-                printf("\033[33mModified:\033[0m %s\n", index_rows[i].path);
-            } else {
-                printf("\033[32mCreated:\033[0m  %s\n", index_rows[i].path);
-            }
+            printf("\033[32mCreated:\033[0m  %s\n", index_rows[i].path);
         }
     }
     printf("\n");
     
-    free(index_rows);
-    free(parent_files);
+    if (index_rows) {
+        free(index_rows);
+    }
 
     return OK;
 }
